@@ -239,6 +239,14 @@ PushNotification.prototype.finish = function(successCallback, errorCallback, id)
     exec(successCallback, errorCallback, 'PushNotification', 'finish', [id]);
 };
 
+PushNotification.prototype.subscribe = function(topics, successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'subscribe', [topics]);
+};
+
+PushNotification.prototype.unsubscribe = function(topics, successCallback, errorCallback) {
+    exec(successCallback, errorCallback, 'PushNotification', 'unsubscribe', [topics]);
+};
+
 /*!
  * Push Notification Plugin.
  */

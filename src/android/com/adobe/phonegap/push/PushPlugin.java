@@ -201,6 +201,46 @@ public class PushPlugin extends CordovaPlugin implements PushConstants {
                     callbackContext.success();
                 }
             });
+        } else if (SUBSCRIBE.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        String token = sharedPref.getString(REGISTRATION_ID, "");
+                        JSONArray topics = data.optJSONArray(0);
+
+                        if (topics != null && !"".equals(token)) {
+                            subscribeToTopics(topics, token);
+                        }
+
+                        callbackContext.success();
+
+                    } catch (Exception e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
+        } else if (UNSUBSCRIBE.equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+
+                        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences(COM_ADOBE_PHONEGAP_PUSH, Context.MODE_PRIVATE);
+                        String token = sharedPref.getString(REGISTRATION_ID, "");
+                        JSONArray topics = data.optJSONArray(0);
+
+                        if (topics != null && !"".equals(token)) {
+                            unsubscribeFromTopics(topics, token);
+                        }
+
+                        callbackContext.success();
+
+                    } catch (Exception e) {
+                        callbackContext.error(e.getMessage());
+                    }
+                }
+            });
         } else {
             Log.e(LOG_TAG, "Invalid action : " + action);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));

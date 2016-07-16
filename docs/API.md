@@ -1,17 +1,17 @@
 # API
 
 - [.init()](#pushnotificationinitoptions)
-- [.hasPermission()](#pushnotificationhaspermissionsuccesshandler)
+- [.hasPermission() - Android & iOS only](#pushnotificationhaspermissionsuccesshandler---android--ios-only)
 - [push.on()](#pushonevent-callback)
   - [push.on('registration')](#pushonregistration-callback)
   - [push.on('notification')](#pushonnotification-callback)
   - [push.on('error')](#pushonerror-callback)
 - [push.off()](#pushoffevent-callback)
 - [push.unregister()](#pushunregistersuccesshandler-errorhandler-topics)
-- [push.setApplicationIconBadgeNumber()](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios-only)
-- [push.getApplicationIconBadgeNumber()](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
-- [push.finish()](#pushfinishsuccesshandler-errorhandler-id---ios-only)
-- [push.clearAllNotifications()](#pushclearallnotificationssuccesshandler-errorhandler---ios-android-only)
+- [push.setApplicationIconBadgeNumber() - iOS & Android only](#pushsetapplicationiconbadgenumbersuccesshandler-errorhandler-count---ios--android-only)
+- [push.getApplicationIconBadgeNumber() - iOS only](#pushgetapplicationiconbadgenumbersuccesshandler-errorhandler---ios-only)
+- [push.finish() - iOS only](#pushfinishsuccesshandler-errorhandler-id---ios-only)
+- [push.clearAllNotifications() - iOS & Android only](#pushclearallnotificationssuccesshandler-errorhandler---ios--android-only)
 
 ## PushNotification.init(options)
 
@@ -42,6 +42,7 @@ Attribute | Type | Default | Description
 `android.iconColor` | `string` | | Optional. Sets the background color of the small icon on Android 5.0 and greater. [Supported Formats](http://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String))
 `android.sound` | `boolean` | `true` | Optional. If `true` it plays the sound specified in the push data or the default system sound.
 `android.vibrate` | `boolean` | `true` | Optional. If `true` the device vibrates on receipt of notification.
+`android.clearBadge` | `boolean` | `false` | Optional. If `true` the icon badge will be cleared on init and before push messages are processed.
 `android.clearNotifications` | `boolean` | `true` | Optional. If `true` the app clears all pending notifications when it is closed.
 `android.forceShow` | `boolean` | `false` | Optional. Controls the behavior of the notification when app is in foreground. If `true` and app is in foreground, it will show a notification in the notification drawer, the same way as when the app is in background (and `on('notification')` callback will be called *only when the user clicks the notification*). When `false` and app is in foreground, the `on('notification')` callback will be called immediately.
 `android.topics` | `array` | `[]` | Optional. If the array contains one or more strings each string will be used to subscribe to a GcmPubSub topic.
@@ -103,8 +104,6 @@ var push = PushNotification.init({
 
 ## PushNotification.hasPermission(successHandler) - Android & iOS only
 
-> Deprecated this method will be remove in release 2.0.0
-
 Checks whether the push notification permission has been granted.
 
 ### Parameters
@@ -157,6 +156,12 @@ push.on('registration', function(data) {
 	console.log(data.registrationId);
 });
 ```
+
+For APNS users: the `registrationId` you will get will be a production or sandbox id according to how the app was built. ([Source](https://developer.apple.com/library/ios/technotes/tn2265/_index.html))
+
+> Note: There is a separate persistent connection to the push service for each environment. The operating system establishes a persistent connection to the sandbox environment for development builds; ad hoc and distribution builds connect to the production environment.
+
+
 
 ### Common Problems
 
@@ -340,7 +345,7 @@ push.finish(function() {
 }, 'push-1');
 ```
 
-## push.clearAllNotifications(successHandler, errorHandler) - iOS, Android only
+## push.clearAllNotifications(successHandler, errorHandler) - iOS & Android only
 
 Tells the OS to clear all notifications from the Notification Center
 

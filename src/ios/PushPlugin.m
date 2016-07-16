@@ -150,6 +150,57 @@
     }
 }
 
+- (void)subscribe:(CDVInvokedUrlCommand*)command;
+{
+    NSArray* topics = [command argumentAtIndex:0];
+    
+    if (topics != nil) {
+        id pubSub = [GCMPubSub sharedInstance];
+        for (NSString *topic in topics) {
+            NSLog(@"subscribe from topic: %@", topic);
+            id pubSub = [GCMPubSub sharedInstance];
+            [pubSub subscribeWithToken: [weakSelf gcmRegistrationToken]
+                               topic:[NSString stringWithFormat:@"/topics/%@", topic]
+                               options:nil
+                               handler:^void(NSError *error) {
+                                   if (error) {
+                                       if (error.code == 3001) {
+                                           NSLog(@"Already subscribed to %@", topic);
+                                       } else {
+                                           NSLog(@"Failed to subscribe to topic %@: %@", topic, error);
+                                       }
+                                   }
+                                   else {
+                                       NSLog(@"Successfully subscribe to topic %@", topic);
+                                   }
+                               }];
+        }
+    }
+}
+
+- (void)unsubscribe:(CDVInvokedUrlCommand*)command;
+{
+    NSArray* topics = [command argumentAtIndex:0];
+    
+    if (topics != nil) {
+        id pubSub = [GCMPubSub sharedInstance];
+        for (NSString *topic in topics) {
+            NSLog(@"unsubscribe from topic: %@", topic);
+            [pubSub unsubscribeWithToken: [self gcmRegistrationToken]
+                                   topic:topic
+                                 options:nil
+                                 handler:^void(NSError *error) {
+                                     if (error) {
+                                         NSLog(@"Failed to unsubscribe from topic %@: %@", topic, error);
+                                     }
+                                     else {
+                                         NSLog(@"Successfully unsubscribe from topic %@", topic);
+                                     }
+                                 }];
+        }
+    }
+}
+
 - (void)init:(CDVInvokedUrlCommand*)command;
 {
     [self.commandDelegate runInBackground:^ {

@@ -153,6 +153,7 @@
 - (void)subscribe:(CDVInvokedUrlCommand*)command;
 {
     NSArray* topics = [command argumentAtIndex:0];
+    __weak __block PushPlugin *weakSelf = self;
     
     if (topics != nil) {
         id pubSub = [GCMPubSub sharedInstance];

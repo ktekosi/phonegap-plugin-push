@@ -2,6 +2,7 @@
   "name": "ktekosi-phonegap-plugin-push",
   "description": "Register and receive push notifications.",
   "homepage": "http://github.com/ktekosi/phonegap-plugin-push#readme",
+  "version": "1.8.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/ktekosi/phonegap-plugin-push.git"
